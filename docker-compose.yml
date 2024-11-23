@@ -1,0 +1,9 @@
+services:
+  db:
+    container_name: "data_base"
+    image: mariadb:latest
+    restart: always
+    environment:
+      - MARIADB_ROOT_PASSWORD:12345
+    ports:
+      - 5080:5080
