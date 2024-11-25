@@ -25,19 +25,6 @@ namespace Teledock.Commands
             this._TypeClient = typeClient;
         }
         public TypeClient getTypeClient() { return this._TypeClient; }
-
-        public Client MapToClient()
-        {
-            return new Client
-            {
-                Inn = this.Inn,
-                Name = this.Name,
-                _TypeClient = TypeClient.IP,
-                dateAdd = DateOnly.FromDateTime(DateTime.Now),
-                dateUpdate = DateOnly.FromDateTime(DateTime.Now),
-            };
-        }
-       
     }
     
  

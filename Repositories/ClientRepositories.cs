@@ -101,7 +101,7 @@ namespace Teledock.Repositories
                 throw new Exception("ошибка добавления учредителя для клиента");
             }
         }
-        public async Task UpdateClient(int Id, Client client, List<Founder> founders){
+        public async Task UpdateClient(Client client, List<Founder> founders){
             using(var transaction = await _db.Database.BeginTransactionAsync()){
                 try
                 {
@@ -153,7 +153,7 @@ namespace Teledock.Repositories
             }
             
         }
-        public void UpdateFounder(Founder founder){
+        public async Task UpdateFounder(Founder founder){
             try
             {
                 _db.Attach(founder);

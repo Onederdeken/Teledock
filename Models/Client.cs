@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 
 namespace Teledock.Models
 {
-    [Table("киенты")]
+    [Table("клиенты")]
     public class Client
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 
         public int Id{get;set;}
-       [Column("Инн")]
+        [Column("Инн")]
         public String Inn{get;set;}
         [Column("имя")]
         public String Name{get;set;}

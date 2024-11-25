@@ -21,19 +21,6 @@ namespace Teledock.Services
         {
             String message = String.Empty;
             int code = 0;
-            
-            if(client.getTypeClient() != TypeClient.UL && client.getTypeClient() != TypeClient.IP)
-            {
-                message = "не верно указан тип клиента";
-                code = 400;
-                return (message, code);
-            }
-            else if (client.getTypeClient() != TypeClient.IP)
-            {
-                message = "вы пытаетесь добаввить не тот тип клиента";
-                code = 400;
-                return (message, code);
-            }
             try
             {
                 using(var mapper = new CustomMapper())
@@ -55,20 +42,6 @@ namespace Teledock.Services
         {
             String message = String.Empty;
             int code = 0;
-            
-            
-            if (client.getTypeClient() != TypeClient.UL && client.getTypeClient() != TypeClient.IP)
-            {
-                message = "не верно указан тип клиента";
-                code = 400;
-                return (message, code);
-            }
-            else if (client.getTypeClient() != TypeClient.UL)
-            {
-                message = "вы пытаетесь добаввить не тот тип клиента";
-                code = 400;
-                return (message, code);
-            }
             try
             {
                 using(var mapper = new CustomMapper())
@@ -85,6 +58,62 @@ namespace Teledock.Services
                 code = 400;
             }
             return (message, code);
+        }
+
+        public async Task<(string Message, int code)> DeleteClient(int ClientId)
+        {
+            String message = String.Empty;
+            int code = 0;
+            Task result = null;
+            try
+            {
+                if (await _ClientRep.ExistClient(ClientId))
+                {
+                    result = _ClientRep.DeleteClient(ClientId);
+                    message = "Удаление прошло успешно";
+                    code = 200;
+                }
+                else
+                {
+                    message = "такого клиента не существует";
+                    code = 400;
+                }
+            }
+            catch (Exception ex)
+            {
+                message = ex.Message;
+                code = 400;
+            }
+            if (result != null) await result;
+            return (message, code);
+
+        }
+
+        public async Task<(string Message, int code)> DeleteFounder(int FounderId)
+        {
+            String Message = String.Empty;
+            int code = 0;
+            Task result = null;
+            try
+            {
+                if (await _ClientRep.ExistFounder(FounderId))
+                {
+                    result = _ClientRep.DeleteFounder(FounderId);
+                    Message = "удаление прошло успешно";
+                    code = 200;
+                }
+                else
+                {
+                    Message = "такого учредителя не существует";
+                    code = 400;
+                }
+            }
+            catch(Exception ex)
+            {
+                Message = ex.Message;
+                code = 400;
+            }
+            return (Message, code);
         }
 
         public async Task<(string Error, List<ClientQuery> clients)> getAllClients()
@@ -108,34 +137,130 @@ namespace Teledock.Services
             return (Error, clientQueries);
         }
 
-        public Task<(string Error, ClientQuery client)> getClientById(int id)
+        public async Task<(string Error, ClientQuery client)> getClientById(int id)
         {
-            throw new NotImplementedException();
+            String Error = String.Empty;
+            ClientQuery clientQuery = new ClientQuery();
+            try
+            {
+                var client = await _ClientRep.getClientById(id);
+                using(var mapper = new CustomMapper())
+                {
+                    clientQuery = mapper.MapToClientQuery(client);
+                }
+            }
+            catch(Exception ex)
+            {
+                Error = ex.Message;
+            }
+            return (Error, clientQuery);
         }
 
-        public Task<(string Error, List<ClientQuery> clients)> getIPClients()
+        public async Task<(string Error, List<ClientQuery> clients)> getIPClients()
         {
-            throw new NotImplementedException();
+            String Error = String.Empty;
+            List<ClientQuery> clientQueries = new List<ClientQuery>();
+            try
+            {
+                var clients = await _ClientRep.getIPClient();
+                using (var mapper = new CustomMapper())
+                {
+                    clientQueries = mapper.MapToListClientQuery(clients);
+                }
+                
+            }
+            catch(Exception ex)
+            {
+                Error = ex.Message;
+            }
+            return (Error, clientQueries);
         }
 
-        public Task<(string Error, List<ClientQuery> clients)> getUrClients()
+        public async Task<(string Error, List<ClientQuery> clients)> getULClients()
         {
-            throw new NotImplementedException();
+            String Error = String.Empty;
+            List<ClientQuery> clientQueries = new List<ClientQuery>();
+            try
+            {
+                var clients = await _ClientRep.getULClient();
+                using (var mapper = new CustomMapper())
+                {
+                    clientQueries = mapper.MapToListClientQuery(clients);
+                }
+            }
+            catch (Exception ex)
+            {
+                Error = ex.Message;
+            }
+            return (Error, clientQueries);
         }
 
-        public Task<(string Message, int code)> UpdateClient(ClientIPCommand client)
+        public async Task<(string Message, int code)> UpdateClient(ClientIPCommand clientIP)
         {
-            throw new NotImplementedException();
+            String message = String.Empty;
+            int code = 0;
+            try
+            {
+                using(var mapper = new CustomMapper())
+                {
+                    var client = mapper.MapToClient(clientIP);
+                    await _ClientRep.UpdateClient(client,new List<Founder>());
+                }
+                message = "обновление прошло удачно";
+                code = 200;
+            }
+            catch (Exception ex)
+            {
+                message = ex.Message;
+                code = 400;
+            }
+            return (message, code);
         }
-        public Task<(string Message, int code)> UpdateClient(ClientULCommand client, List<FounderCommand> founders)
+        public async Task<(string Message, int code)> UpdateClient(ClientULCommand clientUL, List<FounderCommand> foundersCommand)
         {
-            throw new NotImplementedException();
+            String message = String.Empty;
+            int code = 0;
+            try
+            {
+                using (var mapper = new CustomMapper())
+                {
+                    var client = mapper.MapToClient(clientUL);
+                    var founders = mapper.MapToListFounder(foundersCommand);
+                    await _ClientRep.UpdateClient(client,founders);
+                    message = "обновление прошло удачно";
+                    code = 200;
+                }
+            }
+            catch (Exception ex)
+            {
+                message = ex.Message;
+                code = 400;
+            }
+            return (message, code);
         }
 
-        public Task<(string Message, int code)> UpdateFounder(FounderCommand founder)
+        public async Task<(string Message, int code)> UpdateFounder(FounderCommand founderCommand)
         {
-            throw new NotImplementedException();
+            String message = String.Empty;
+            int code = 0;
+            try
+            {
+                using (var mapper = new CustomMapper())
+                {
+                    var founder = mapper.MapToFounder(founderCommand);
+                   
+                    await _ClientRep.UpdateFounder (founder);
+                }
+                message = "обновление прошло удачно";
+                code = 200;
+
+            }
+            catch (Exception ex)
+            {
+                message = ex.Message;
+                code = 400;
+            }
+            return (message, code);
         }
-     
     }
 }

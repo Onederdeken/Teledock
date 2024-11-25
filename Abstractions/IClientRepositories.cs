@@ -14,9 +14,9 @@ namespace Teledock.Abstractions
         public  Task<Client> getClientById(int Id);
         public  Task AddIPClient(Client client);
         public  Task AddURClient(Client client, List<Founder> founders);
-        public  Task UpdateClient(int Id, Client client, List<Founder> founders);
+        public  Task UpdateClient(Client client, List<Founder> founders);
         public  Task DeleteClient(int Id);
-        public void UpdateFounder(Founder founder);
+        public Task UpdateFounder(Founder founder);
         public Task DeleteFounder(int FounderId);
         public Task AddFounder(int ClientId, Founder founder);
         public Task<bool> ExistClient(int Id);

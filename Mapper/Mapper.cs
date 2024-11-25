@@ -1,10 +1,11 @@
-﻿using Teledock.Commands;
+﻿using Teledock.Abstractions;
+using Teledock.Commands;
 using Teledock.Models;
 using Teledock.Queries;
 
 namespace Teledock.Mapper
 {
-    public class CustomMapper : IDisposable
+    public class CustomMapper : IDisposable, ICustomMapper
     {
         public void Dispose()
         {
@@ -21,10 +22,11 @@ namespace Teledock.Mapper
                 dateUpdate = DateOnly.FromDateTime(DateTime.Now),
             };
         }
-        public  List<Founder> MapToListFounder(List<FounderCommand> founders)
+        public List<Founder> MapToListFounder(List<FounderCommand> founders)
         {
             var founderList = new List<Founder>();
-            founders.ForEach(founder => {
+            founders.ForEach(founder =>
+            {
                 founderList.Add(MapToFounder(founder));
             });
             return founderList;
@@ -52,7 +54,7 @@ namespace Teledock.Mapper
 
             };
         }
-        public  ClientQuery MapToClientQuery(Client client)
+        public ClientQuery MapToClientQuery(Client client)
         {
             return new ClientQuery
             {
@@ -74,7 +76,7 @@ namespace Teledock.Mapper
             });
             return listclients;
         }
-        public  List<FounderQuery> MapToListFounderQuery(List<Founder> founders)
+        public List<FounderQuery> MapToListFounderQuery(List<Founder> founders)
         {
             var QueryFounders = new List<FounderQuery>();
             founders.ForEach(founder =>
@@ -83,7 +85,7 @@ namespace Teledock.Mapper
             });
             return QueryFounders;
         }
-        public  FounderQuery MapToFounderQuery(Founder founder)
+        public FounderQuery MapToFounderQuery(Founder founder)
         {
             return new FounderQuery
             {
