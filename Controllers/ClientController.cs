@@ -80,28 +80,28 @@ namespace Teledock.Controllers
         [HttpDelete("DeleteFounder")]
         public async Task<IActionResult> DeleteFounder(int IdFounder)
         {
-            var result = await _clientService.DeleteClient(IdFounder);
+            var result = await _clientService.DeleteFounder(IdFounder);
             if (result.code == 200) return Ok(result.Message);
             else return BadRequest(result.Message);
         }
         [HttpPut("ClientIPUpdate")]
-        public async Task<IActionResult> UpdateClientIP(ClientIPCommand clientCommand)
+        public async Task<IActionResult> UpdateClientIP(ClientIPCommand clientCommand, int clientID)
         {
-            var result = await _clientService.UpdateClient(clientCommand);
+            var result = await _clientService.UpdateClient(clientCommand, clientID);
             if (result.code == 200) return Ok(result.Message);
             else return BadRequest(result.Message);
         }
         [HttpPut("ClientULUpdate")]
-        public async Task<IActionResult> UpdateClientUL(ClientULCommand clientCommand)
+        public async Task<IActionResult> UpdateClientUL(ClientULCommand clientCommand, int clientID)
         {
-            var result = await _clientService.UpdateClient(clientCommand, clientCommand.founders);
+            var result = await _clientService.UpdateClient(clientCommand, clientCommand.founders, clientID);
             if (result.code == 200) return Ok(result.Message);
             else return BadRequest(result.Message);
         }
         [HttpPut("FounderUpdate")]
-        public async Task<IActionResult> UpdateFounder(FounderCommand founder)
+        public async Task<IActionResult> UpdateFounder(FounderCommand founder, int founderID)
         {
-            var result = await _clientService.UpdateFounder(founder);
+            var result = await _clientService.UpdateFounder(founder, founderID);
             if(result.code == 200)return Ok(result.Message);
             else return BadRequest(result.Message);
         }

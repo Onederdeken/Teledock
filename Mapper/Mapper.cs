@@ -12,37 +12,56 @@ namespace Teledock.Mapper
 
         }
 
-        public Founder MapToFounder(FounderCommand founder)
+        public Founder MapToFounder(FounderCommand founder, operation operation)
         {
-            return new Founder
+            Founder Founder = operation switch
             {
-                Inn = founder.Inn,
-                FIO = founder.FIO,
-                dateAdd = DateOnly.FromDateTime(DateTime.Now),
-                dateUpdate = DateOnly.FromDateTime(DateTime.Now),
+                operation.Add => new Founder {
+                    Inn = founder.Inn,
+                    FIO = founder.FIO,
+                    dateAdd = DateOnly.FromDateTime(DateTime.Now),
+                    dateUpdate = DateOnly.FromDateTime(DateTime.Now),
+                },
+                operation.Update => new Founder {
+                    Inn = founder.Inn,
+                    FIO = founder.FIO,
+                    dateUpdate = DateOnly.FromDateTime(DateTime.Now),
+                }
             };
+            return Founder;
         }
-        public List<Founder> MapToListFounder(List<FounderCommand> founders)
+        public List<Founder> MapToListFounder(List<FounderCommand> founders, operation operation)
         {
             var founderList = new List<Founder>();
             founders.ForEach(founder =>
             {
-                founderList.Add(MapToFounder(founder));
+                founderList.Add(MapToFounder(founder, operation));
             });
             return founderList;
         }
-        public Client MapToClient(ClientIPCommand client)
+        public Client MapToClient(ClientIPCommand client, operation operation)
         {
-            return new Client
+            Client Client = operation switch
             {
-                Inn = client.Inn,
-                Name = client.Name,
-                _TypeClient = TypeClient.IP,
-                dateAdd = DateOnly.FromDateTime(DateTime.Now),
-                dateUpdate = DateOnly.FromDateTime(DateTime.Now),
+                operation.Add => new Client
+                {
+                    Inn = client.Inn,
+                    Name = client.Name,
+                    _TypeClient = TypeClient.IP,
+                    dateAdd = DateOnly.FromDateTime(DateTime.Now),
+                    dateUpdate = DateOnly.FromDateTime(DateTime.Now),
+                },
+                operation.Update => new Client
+                {
+                    Inn = client.Inn,
+                    Name = client.Name,
+                    _TypeClient = TypeClient.IP,
+                    dateUpdate = DateOnly.FromDateTime(DateTime.Now),
+                }
             };
+            return Client;
         }
-        public Client MapToClient(ClientULCommand client)
+        public Client MapToClient(ClientULCommand client, operation operation)
         {
             return new Client
             {
@@ -64,7 +83,7 @@ namespace Teledock.Mapper
                 Type = client._TypeClient,
                 dateAdd = client.dateAdd,
                 dateUpdate = client.dateUpdate,
-                Queryfounders = MapToListFounderQuery(client.founders)
+                Queryfounders = client._TypeClient == TypeClient.IP ? null : client.founders == null ? new List<FounderQuery>() : MapToListFounderQuery(client.founders)
             };
         }
         public List<ClientQuery> MapToListClientQuery(List<Client> clients)

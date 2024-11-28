@@ -13,21 +13,29 @@ using Teledock.dbContext;
 using Teledock.Models;
 using Teledock.Repositories;
 using Teledock.Services;
+using Teledock.dbContext.Interceptors;
 
 namespace Teledock.DI
 {
     public static  class CustomDependencyInjectionHandler
     {
-       
+
         public static void AddMyDependencyGroup(this IServiceCollection Services, IConfiguration Configuration)
         {
             Services.AddControllers().AddJsonOptions(options =>
             {
                 // Используем строковое представление для enum
                 options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+
             });
-            Services.AddDbContext<Db>(Options=>
-                Options.UseMySql(Configuration.GetConnectionString("DbConnection"), ServerVersion.AutoDetect(Configuration.GetConnectionString("DbConnection")), m=>m.MigrationsAssembly("Teledock.csproj")));
+            Services.AddDbContext<Db>(Options =>
+                {
+                    Options.UseMySql(Configuration.GetConnectionString("DbConnection"), ServerVersion.AutoDetect(Configuration.GetConnectionString("DbConnection")), m => m.MigrationsAssembly("Teledock"));
+                    Options.AddInterceptors(new MyCustomInterceptorForDates());
+                }
+            );
+    
+               
             Services.AddEndpointsApiExplorer();
             Services.AddSwaggerGen(options =>
             {

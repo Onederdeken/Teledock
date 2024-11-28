@@ -25,7 +25,7 @@ namespace Teledock.Services
             {
                 using(var mapper = new CustomMapper())
                 {
-                    await _ClientRep.AddIPClient(mapper.MapToClient(client));
+                    await _ClientRep.AddIPClient(mapper.MapToClient(client, operation.Add));
                     message = "Добавление прошло успешно";
                     code = 200;
                 }
@@ -46,7 +46,7 @@ namespace Teledock.Services
             {
                 using(var mapper = new CustomMapper())
                 {
-                    await _ClientRep.AddURClient(mapper.MapToClient(client), mapper.MapToListFounder(founders));
+                    await _ClientRep.AddURClient(mapper.MapToClient(client,operation.Add), mapper.MapToListFounder(founders,operation.Add));
                     message = "Добавление прошло успешно";
                     code = 200;
                 }
@@ -137,12 +137,13 @@ namespace Teledock.Services
             return (Error, clientQueries);
         }
 
-        public async Task<(string Error, ClientQuery client)> getClientById(int id)
+        public async Task<(string Error, ClientQuery? client)> getClientById(int id)
         {
             String Error = String.Empty;
             ClientQuery clientQuery = new ClientQuery();
             try
             {
+                if(!await _ClientRep.ExistClient(id))return ("такого пользователя не существует",null);
                 var client = await _ClientRep.getClientById(id);
                 using(var mapper = new CustomMapper())
                 {
@@ -195,15 +196,17 @@ namespace Teledock.Services
             return (Error, clientQueries);
         }
 
-        public async Task<(string Message, int code)> UpdateClient(ClientIPCommand clientIP)
+        public async Task<(string Message, int code)> UpdateClient(ClientIPCommand clientIP, int clientID)
         {
             String message = String.Empty;
             int code = 0;
             try
             {
-                using(var mapper = new CustomMapper())
+                if (!await _ClientRep.ExistClient(clientID)) return ("такого клиента не существует", 400);
+                using (var mapper = new CustomMapper())
                 {
-                    var client = mapper.MapToClient(clientIP);
+                    var client = mapper.MapToClient(clientIP, operation.Update);
+                    client.Id = clientID;
                     await _ClientRep.UpdateClient(client,new List<Founder>());
                 }
                 message = "обновление прошло удачно";
@@ -216,16 +219,18 @@ namespace Teledock.Services
             }
             return (message, code);
         }
-        public async Task<(string Message, int code)> UpdateClient(ClientULCommand clientUL, List<FounderCommand> foundersCommand)
+        public async Task<(string Message, int code)> UpdateClient(ClientULCommand clientUL, List<FounderCommand> foundersCommand, int clientID)
         {
             String message = String.Empty;
             int code = 0;
             try
             {
+                if (!await _ClientRep.ExistClient(clientID)) return ("такого клиента не существует", 400);
                 using (var mapper = new CustomMapper())
                 {
-                    var client = mapper.MapToClient(clientUL);
-                    var founders = mapper.MapToListFounder(foundersCommand);
+                    var client = mapper.MapToClient(clientUL,operation.Update);
+                    client.Id = clientID;
+                    var founders = mapper.MapToListFounder(foundersCommand, operation.Update);
                     await _ClientRep.UpdateClient(client,founders);
                     message = "обновление прошло удачно";
                     code = 200;
@@ -239,16 +244,17 @@ namespace Teledock.Services
             return (message, code);
         }
 
-        public async Task<(string Message, int code)> UpdateFounder(FounderCommand founderCommand)
+        public async Task<(string Message, int code)> UpdateFounder(FounderCommand founderCommand, int founderID)
         {
             String message = String.Empty;
             int code = 0;
             try
             {
+                if (!await _ClientRep.ExistFounder(founderID)) return ("такого учредителя не существует", 400);
                 using (var mapper = new CustomMapper())
                 {
-                    var founder = mapper.MapToFounder(founderCommand);
-                   
+                    var founder = mapper.MapToFounder(founderCommand, operation.Update);
+                    founder.Id = founderID;
                     await _ClientRep.UpdateFounder (founder);
                 }
                 message = "обновление прошло удачно";

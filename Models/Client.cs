@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
@@ -22,13 +23,15 @@ namespace Teledock.Models
         [Column("дата добавления")]
         public DateOnly dateAdd{get;set;}
         [Column("дата обновления")]
-        public DateOnly dateUpdate{get;set;}
+        public DateOnly? dateUpdate{get;set;}
         public List<Founder> founders{get;set;}
         
     }
   
     public enum TypeClient{
+        [EnumMember(Value = "UL")]
         UL = 1,
+        [EnumMember(Value = "IP")]
         IP = 2
     }
 }

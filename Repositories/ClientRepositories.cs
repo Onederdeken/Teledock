@@ -20,9 +20,9 @@ namespace Teledock.Repositories
             {
                 return await _db.clients.Include(c=>c.founders).ToListAsync();
             }
-            catch (System.Exception)
+            catch (System.Exception ex)
             {
-               throw new Exception("ошибка получения списка клиентов");
+               throw new Exception($"ошибка получения списка клиентов + {ex.Message}");
             }
         }
         public async Task<List<Client>> getULClient(){
