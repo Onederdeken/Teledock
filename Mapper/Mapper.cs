@@ -12,64 +12,32 @@ namespace Teledock.Mapper
 
         }
 
-        public Founder MapToFounder(FounderCommand founder, operation operation)
+        public Founder MapToFounder(FounderCommand founder)
         {
-            Founder Founder = operation switch
+
+            return new Founder
             {
-                operation.Add => new Founder {
-                    Inn = founder.Inn,
-                    FIO = founder.FIO,
-                    dateAdd = DateOnly.FromDateTime(DateTime.Now),
-                    dateUpdate = DateOnly.FromDateTime(DateTime.Now),
-                },
-                operation.Update => new Founder {
-                    Inn = founder.Inn,
-                    FIO = founder.FIO,
-                    dateUpdate = DateOnly.FromDateTime(DateTime.Now),
-                }
+                Inn = founder.Inn,
+                FIO = founder.FIO,
             };
-            return Founder;
         }
-        public List<Founder> MapToListFounder(List<FounderCommand> founders, operation operation)
+        public List<Founder> MapToListFounder(List<FounderCommand> founders)
         {
             var founderList = new List<Founder>();
             founders.ForEach(founder =>
             {
-                founderList.Add(MapToFounder(founder, operation));
+                founderList.Add(MapToFounder(founder));
             });
             return founderList;
         }
-        public Client MapToClient(ClientIPCommand client, operation operation)
+        public Client MapToClient(ClientCommand client)
         {
-            Client Client = operation switch
-            {
-                operation.Add => new Client
-                {
-                    Inn = client.Inn,
-                    Name = client.Name,
-                    _TypeClient = TypeClient.IP,
-                    dateAdd = DateOnly.FromDateTime(DateTime.Now),
-                    dateUpdate = DateOnly.FromDateTime(DateTime.Now),
-                },
-                operation.Update => new Client
-                {
-                    Inn = client.Inn,
-                    Name = client.Name,
-                    _TypeClient = TypeClient.IP,
-                    dateUpdate = DateOnly.FromDateTime(DateTime.Now),
-                }
-            };
-            return Client;
-        }
-        public Client MapToClient(ClientULCommand client, operation operation)
-        {
+
             return new Client
             {
                 Inn = client.Inn,
                 Name = client.Name,
-                _TypeClient = TypeClient.UL,
-                dateAdd = DateOnly.FromDateTime(DateTime.Now),
-                dateUpdate = DateOnly.FromDateTime(DateTime.Now),
+                _TypeClient = client.getTypeClient()
 
             };
         }
@@ -81,8 +49,8 @@ namespace Teledock.Mapper
                 Inn = client.Inn,
                 Name = client.Name,
                 Type = client._TypeClient,
-                dateAdd = client.dateAdd,
-                dateUpdate = client.dateUpdate,
+                dateAdd = client.dateAdd.ToString("dd.MM.yyyy HH:mm"),
+                dateUpdate = client.dateUpdate.HasValue ? client.dateUpdate.Value.ToString("dd.MM.yyyy HH:mm") : "еще не было обновлений",
                 Queryfounders = client._TypeClient == TypeClient.IP ? null : client.founders == null ? new List<FounderQuery>() : MapToListFounderQuery(client.founders)
             };
         }
@@ -111,8 +79,8 @@ namespace Teledock.Mapper
                 Id = founder.Id,
                 Inn = founder.Inn,
                 FIO = founder.FIO,
-                dateAdd = founder.dateAdd,
-                dateUpdate = founder.dateUpdate
+                dateAdd = founder.dateAdd.ToString("dd.MM.yyyy HH:mm"),
+                dateUpdate = founder.dateUpdate.HasValue ? founder.dateUpdate.Value.ToString("dd.MM.yyyy HH:mm") : "еще не было обновлений"
             };
         }
     }

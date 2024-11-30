@@ -1,3 +1,4 @@
+using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -5,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Teledock.Queries
 {
-    public class FounderQuery
+    public class FounderQuery : IRequest<(String Error, FounderQuery FounderQuery)>
     {
         public int Id{get;set;}
         
@@ -13,8 +14,8 @@ namespace Teledock.Queries
         
         public String FIO{get;set;}
         
-        public DateOnly dateAdd{get;set;}
+        public String dateAdd{get;set;}
         
-        public DateOnly dateUpdate{get;set;}
+        public String? dateUpdate{get;set;}
     }
 }

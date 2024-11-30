@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 using Teledock.Abstractions;
 using Teledock.Commands;
 using Teledock.dbContext;
 using Teledock.Models;
+using Teledock.Queries.Clients;
 
 namespace Teledock.Controllers
 {
@@ -15,25 +18,32 @@ namespace Teledock.Controllers
     [Route("api/[controller]")]
     public class ClientController : ControllerBase
     {
+        private readonly IMediator _mediator;
         private readonly IClientService _clientService;
-        public ClientController(IClientService clientService) {
+        public ClientController(IClientService clientService, IMediator mediator) {
             this._clientService = clientService;
+            this._mediator = mediator;
         }
         [HttpGet("GetAllClients")]
         public async Task<IActionResult> GetAllClients() {
-            var result = await _clientService.getAllClients();
+            ClientsQueries clientsQueries = new ClientsQueries();
+            var result = await _mediator.Send(clientsQueries);
             if (result.Error == String.Empty) {
-                return Ok(result.clients);
+                return Ok(result.ClientQueries);
             }
             else {
                 return BadRequest(result.Error);
             }
         }
         [HttpGet("GetClientById")]
-        public async Task<IActionResult> GetClientById(int Id)
+        public async Task<IActionResult> GetClientById([Required] int Id)
         {
-            var result = await _clientService.getClientById(Id);
-            if (result.Error == String.Empty) return Ok(result.client);
+            ClientQuery clientQuery = new ClientQuery()
+            {
+                Id = Id
+            };
+            var result = await _mediator.Send(clientQuery);
+            if (result.Error == String.Empty) return Ok(result.ClientQuery);
             else return BadRequest(result.Error);
         }
         [HttpGet("GetClientsIP")]
@@ -51,60 +61,31 @@ namespace Teledock.Controllers
             else return BadRequest(result.clients);
         }
 
-        [HttpPost("AddIPClient")]
-        public async Task<IActionResult> AddIPClient( [Required]ClientIPCommand client)
+        [HttpPost("AddClient")]
+        public async Task<IActionResult> AddClient( [Required]ClientCommand client, [Required]TypeClient type)
         {
-            client.setTypeClient(TypeClient.IP);
-            var result = await _clientService.addClientIP(client);
+            client.setTypeClient(type);
+            var result = await _clientService.addClient(client);
             if(result.code == 400)
             {
                 return BadRequest(result.Message);
             }
             else return Ok(result.Message);
         }
-        [HttpPost("AddULClient")]
-        public async Task<IActionResult> AddULClient([Required] ClientULCommand client)
-        {
-            client.setTypeClient(TypeClient.UL);
-            var result = await _clientService.addClientUL(client, client.founders);
-            if(result.code == 400)return BadRequest(result.Message);
-            else return Ok(result.Message);
-        }
         [HttpDelete("DeleteClient")]
-        public async Task<IActionResult> DeleteClient(int IdClient)
+        public async Task<IActionResult> DeleteClient([Required]int IdClient)
         {
             var result = await _clientService.DeleteClient(IdClient);
             if (result.code == 200) return Ok(result.Message);
             else return BadRequest(result.Message);
         }
-        [HttpDelete("DeleteFounder")]
-        public async Task<IActionResult> DeleteFounder(int IdFounder)
+        [HttpPut("ClientUpdate")]
+        public async Task<IActionResult> UpdateClient([Required]ClientCommand clientCommand, [Required]int clientID, TypeClient type)
         {
-            var result = await _clientService.DeleteFounder(IdFounder);
-            if (result.code == 200) return Ok(result.Message);
-            else return BadRequest(result.Message);
-        }
-        [HttpPut("ClientIPUpdate")]
-        public async Task<IActionResult> UpdateClientIP(ClientIPCommand clientCommand, int clientID)
-        {
+            clientCommand.setTypeClient(type);
             var result = await _clientService.UpdateClient(clientCommand, clientID);
             if (result.code == 200) return Ok(result.Message);
             else return BadRequest(result.Message);
         }
-        [HttpPut("ClientULUpdate")]
-        public async Task<IActionResult> UpdateClientUL(ClientULCommand clientCommand, int clientID)
-        {
-            var result = await _clientService.UpdateClient(clientCommand, clientCommand.founders, clientID);
-            if (result.code == 200) return Ok(result.Message);
-            else return BadRequest(result.Message);
-        }
-        [HttpPut("FounderUpdate")]
-        public async Task<IActionResult> UpdateFounder(FounderCommand founder, int founderID)
-        {
-            var result = await _clientService.UpdateFounder(founder, founderID);
-            if(result.code == 200)return Ok(result.Message);
-            else return BadRequest(result.Message);
-        }
-
     }
 }

@@ -12,34 +12,43 @@ namespace Teledock.dbContext.Interceptors
     {
         public override async ValueTask<InterceptionResult<int>> SavingChangesAsync(DbContextEventData eventData, InterceptionResult<int> result, CancellationToken token = default)
         {
-            var entries = eventData.Context.ChangeTracker.Entries().Where(e=>e.Entity is Client && (e.State == EntityState.Added || e.State == EntityState.Modified) ||
-            e.Entity is Founder && (e.State == EntityState.Added || e.State == EntityState.Modified));
-
-            foreach (var entry in entries)
+            try
             {
-                if(entry.State == EntityState.Added)
+                var entries = eventData.Context.ChangeTracker.Entries().Where(e => e.Entity is Client && (e.State == EntityState.Added || e.State == EntityState.Modified) ||
+                e.Entity is Founder && (e.State == EntityState.Added || e.State == EntityState.Modified));
+
+                foreach (var entry in entries)
                 {
-                    if(entry.GetType() == typeof(Client))
+                    if (entry.State == EntityState.Added)
                     {
-                        ((Client)entry.Entity).dateAdd = DateOnly.FromDateTime(DateTime.Now);
+                        if (entry.Entity is Client)
+                        {
+                            ((Client)entry.Entity).dateAdd = DateTime.UtcNow;
+
+                        }
+                        else
+                        {
+                            ((Founder)entry.Entity).dateAdd = DateTime.UtcNow;
+                        }
                     }
                     else
                     {
-                        ((Founder)entry.Entity).dateAdd = DateOnly.FromDateTime(DateTime.Now);
-                    }
-                }
-                else
-                {
-                    if (entry.GetType() == typeof(Client))
-                    {
-                        ((Client)entry.Entity).dateUpdate = DateOnly.FromDateTime(DateTime.Now);
-                    }
-                    else
-                    {
-                        ((Founder)entry.Entity).dateUpdate = DateOnly.FromDateTime(DateTime.Now);
+                        if (entry.Entity is Client)
+                        {
+                            ((Client)entry.Entity).dateUpdate = DateTime.UtcNow;
+                        }
+                        else
+                        {
+                            ((Founder)entry.Entity).dateUpdate = DateTime.UtcNow;
+                        }
                     }
                 }
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+           
             return await base.SavingChangesAsync(eventData, result, token);
         }
     }

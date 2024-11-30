@@ -1,5 +1,8 @@
+using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -21,13 +24,16 @@ namespace Teledock.Models
         [Column("тип")]
         public TypeClient _TypeClient{get;set;}
         [Column("дата добавления")]
-        public DateOnly dateAdd{get;set;}
+        public DateTime dateAdd{get;set;}
         [Column("дата обновления")]
-        public DateOnly? dateUpdate{get;set;}
+        public DateTime? dateUpdate{get;set;}
         public List<Founder> founders{get;set;}
         
+        
     }
-  
+
+    [SwaggerSchema(Description = "Тип клиента")]
+    
     public enum TypeClient{
         [EnumMember(Value = "UL")]
         UL = 1,

@@ -14,12 +14,9 @@ namespace Teledock.Abstractions
         public Task<(String Error, List<ClientQuery> clients)> getAllClients();
         public Task<(String Error, List<ClientQuery> clients)> getULClients();
         public Task<(String Error, List<ClientQuery> clients)> getIPClients();
-        public Task<(String Message, int code)> addClientUL(ClientULCommand client, List<FounderCommand> founders);
-        public Task<(String Message, int code)> addClientIP(ClientIPCommand client);
-        public Task<(String Message, int code)> UpdateClient(ClientIPCommand client, int clientID);
-        public Task<(String Message, int code)> UpdateClient(ClientULCommand client, List<FounderCommand> founders, int clientID);
-        public Task<(String Message, int code)> UpdateFounder(FounderCommand founder, int founderID);
+        public Task<(String Message, int code)> addClient(ClientCommand client);
+        public Task<(String Message, int code)> UpdateClient(ClientCommand client, int clientID);
         public Task<(String Message, int code)> DeleteClient(int ClientId);
-        public Task<(String Message, int code)> DeleteFounder(int FounderId);
+        
     }
 }

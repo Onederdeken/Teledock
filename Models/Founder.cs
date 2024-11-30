@@ -17,9 +17,9 @@ namespace Teledock.Models
         [Column("фио")]
         public String FIO{get;set;}
          [Column("дата добавления")]
-        public DateOnly dateAdd{get;set;}
+        public DateTime dateAdd{get;set;}
         [Column("дата обновления")]
-        public DateOnly? dateUpdate{get;set;}
+        public DateTime? dateUpdate{get;set;}
 
         public int ClientId{get;set;}
         public Client client {get;set;}

@@ -7,18 +7,12 @@ namespace Teledock.Abstractions
 {
     public interface ICustomMapper
     {
-        Client MapToClient(ClientIPCommand client, operation operation);
-        Client MapToClient(ClientULCommand client, operation operation);
+        Client MapToClient(ClientCommand client);
         ClientQuery MapToClientQuery(Client client);
-        Founder MapToFounder(FounderCommand founder, operation operation);
+        Founder MapToFounder(FounderCommand founder);
         FounderQuery MapToFounderQuery(Founder founder);
         List<ClientQuery> MapToListClientQuery(List<Client> clients);
-        List<Founder> MapToListFounder(List<FounderCommand> founders, operation operation);
+        List<Founder> MapToListFounder(List<FounderCommand> founders);
         List<FounderQuery> MapToListFounderQuery(List<Founder> founders);
-    }
-    public enum operation
-    {
-        Add,
-        Update
     }
 }

@@ -12,6 +12,17 @@ namespace Teledock.dbContext
         public DbSet<Client> clients{get;set;}
         public DbSet<Founder> founders{get;set;}
         public Db(DbContextOptions<Db> options):base(options){}
-        
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Client>()
+                .HasIndex(e => e.Inn)
+                .IsUnique(); // ”никальный индекс на поле Inn
+            modelBuilder.Entity<Founder>()
+                .HasIndex(e=>e.Inn)
+                .IsUnique();
+        }
+
     }
 }

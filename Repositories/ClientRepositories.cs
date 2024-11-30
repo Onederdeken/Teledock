@@ -22,7 +22,7 @@ namespace Teledock.Repositories
             }
             catch (System.Exception ex)
             {
-               throw new Exception($"ошибка получения списка клиентов + {ex.Message}");
+               throw new Exception($"ошибка получения списка клиентов + \n ошибка:{ex.Message}" + "\n" +"внутреняя ошибка:" + ex.InnerException.Message);
             }
         }
         public async Task<List<Client>> getULClient(){
@@ -30,9 +30,9 @@ namespace Teledock.Repositories
             {
                 return await _db.clients.Include(c=>c.founders).Where(c=>c._TypeClient == TypeClient.UL).ToListAsync();
             }
-            catch (System.Exception)
+            catch (System.Exception ex)
             {
-                throw new Exception("ошибка получения списка клиентов(юридические лица)");
+                throw new Exception("ошибка получения списка клиентов(юридические лица)" + "\nОшибка: " + ex.Message + "\n" + "внутреняя ошибка:" + ex.InnerException.Message);
             }
         }
         public async Task<List<Client>> getIPClient(){
@@ -40,9 +40,9 @@ namespace Teledock.Repositories
             {
                 return await _db.clients.Where(c=>c._TypeClient == TypeClient.IP).ToListAsync();
             }
-            catch (System.Exception)
+            catch (System.Exception ex)
             {
-                throw new Exception("ошибка получения списка клиентов (индивидуальный предприниматель)");
+                throw new Exception("ошибка получения списка клиентов (индивидуальный предприниматель)" + "\nОшибка: " + ex.Message + "\n" + "внутреняя ошибка:" + ex.InnerException.Message);
             }
         }
         public async Task<Client?> getClientById(int Id){
@@ -50,12 +50,12 @@ namespace Teledock.Repositories
             {
                 return await _db.clients.Include(c=>c.founders).FirstOrDefaultAsync(c=>c.Id == Id);
             }
-            catch (System.Exception)
+            catch (System.Exception ex)
             {
-                throw new Exception("ошибка получения клиента по id");
+                throw new Exception("ошибка получения клиента по id" + "\nОшибка: " + ex.Message + "\n" + "внутреняя ошибка:" + ex.InnerException.Message);
             }
         }
-        public async Task AddIPClient(Client client){
+        public async Task AddClient(Client client){
             try
             {
                 var add = _db.AddAsync(client);
@@ -63,62 +63,29 @@ namespace Teledock.Repositories
                 await add;
                 await save;
             }
-            catch (System.Exception)
+            catch (System.Exception ex)
             {
-                throw new Exception("ошибка добавления клиента (индивидуальный предприниматель)");
+                throw new Exception("ошибка добавления клиента"+ "\nОшибка: " + ex.Message + "\n" + "внутреняя ошибка:" + ex.InnerException.Message);
             }
         }
-        public async Task AddURClient(Client client, List<Founder> founders){
-             using(var transaction = await _db.Database.BeginTransactionAsync()){
-                try
-                {
-                    await _db.AddAsync(client);
-                    await _db.SaveChangesAsync();
-                    founders.ForEach( c=>{
-                        c.ClientId = client.Id;
-                        _db.AddAsync(c);
-                    });
-                    await _db.SaveChangesAsync();
-                    await transaction.CommitAsync();
-                }
-                catch (System.Exception ex)
-                {
-                    await transaction.RollbackAsync();
-                    throw new Exception("ошибка добавления клиента (юридическое лицо)");
-                }
-             }
-        }
-        public async Task AddFounder(int ClientId, Founder founder){
-            try
-            {
-                founder.ClientId = ClientId;
-                _db.Add(founder);
-                await _db.SaveChangesAsync();
-            }
-            catch (System.Exception)
-            {
-                
-                throw new Exception("ошибка добавления учредителя для клиента");
-            }
-        }
-        public async Task UpdateClient(Client client, List<Founder> founders){
+       
+        public async Task UpdateClient(Client client){
             using(var transaction = await _db.Database.BeginTransactionAsync()){
                 try
                 {
-                    _db.Attach(client);
-                    _db.Entry(client).State = EntityState.Modified;
-                    founders.ForEach(c=>{
-                        _db.Attach(c);
-                        _db.Entry(c).State = EntityState.Modified;
-                    });
+                    
+                    var Client = await _db.clients.FindAsync(client.Id);
+                    Client.Name = client.Name;
+                    Client.Inn = client.Inn;
+                    if (client._TypeClient != 0) Client._TypeClient = client._TypeClient;
                     await _db.SaveChangesAsync();
                     await transaction.CommitAsync();
 
                 }
-                catch (System.Exception)
+                catch (System.Exception ex)
                 {
                     await transaction.RollbackAsync();
-                    throw new Exception("ошибка обновления клиента");
+                    throw new Exception("ошибка обновления клиента" + "\nОшибка: " + ex.Message + "\n" + "внутреняя ошибка:" + ex.InnerException.Message);
                 }
             }
 
@@ -133,46 +100,18 @@ namespace Teledock.Repositories
                     await _db.SaveChangesAsync();
                     await transaction.CommitAsync();
                 }
-                catch (System.Exception)
+                catch (System.Exception ex)
                 {
                     await transaction.RollbackAsync();
-                    throw new Exception("ошибка удаления клиента");
+                    throw new Exception("ошибка удаления клиента" + "\nОшибка: " + ex.Message + "\n" + "внутреняя ошибка:" + ex.InnerException.Message);
                 }
             }
         }
-        public async Task DeleteFounder(int FounderId){
-            try
-            {
-                var founder = await _db.founders.FindAsync(FounderId);
-                _db.founders.Remove(founder);
-                await _db.SaveChangesAsync();
-            }
-            catch (System.Exception)
-            {
-                throw new Exception("ошибка удаления учредителя");
-            }
-            
-        }
-        public async Task UpdateFounder(Founder founder){
-            try
-            {
-                _db.Attach(founder);
-                _db.Entry(founder).State = EntityState.Modified;
-            }
-            catch (System.Exception)
-            {
-                throw new Exception("ошибка обновления учредителя");
-            }
-        }
         public async Task<bool> ExistClient(int Id){
-            var client = await _db.clients.FindAsync(Id);
-            if(client == null)return false;
-            else return true;
+            bool result;
+            var client = await _db.clients.AsNoTracking().FirstOrDefaultAsync(c=>c.Id == Id);
+            return client == null?false : true;
         }
-        public async Task<bool> ExistFounder(int Id){
-            var founder = await _db.founders.FindAsync(Id);
-            if(founder == null)return false;
-            else return true;
-        }
+        
     }
 }

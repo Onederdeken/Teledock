@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Teledock.dbContext;
 
@@ -11,9 +12,11 @@ using Teledock.dbContext;
 namespace Teledock.Migrations
 {
     [DbContext(typeof(Db))]
-    partial class DbModelSnapshot : ModelSnapshot
+    [Migration("20241129210753_init3")]
+    partial class init3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -32,7 +35,7 @@ namespace Teledock.Migrations
 
                     b.Property<string>("Inn")
                         .IsRequired()
-                        .HasColumnType("varchar(255)")
+                        .HasColumnType("longtext")
                         .HasColumnName("Инн");
 
                     b.Property<string>("Name")
@@ -44,18 +47,15 @@ namespace Teledock.Migrations
                         .HasColumnType("int")
                         .HasColumnName("тип");
 
-                    b.Property<DateTime>("dateAdd")
-                        .HasColumnType("datetime(6)")
+                    b.Property<DateOnly>("dateAdd")
+                        .HasColumnType("date")
                         .HasColumnName("дата добавления");
 
-                    b.Property<DateTime?>("dateUpdate")
-                        .HasColumnType("datetime(6)")
+                    b.Property<DateOnly?>("dateUpdate")
+                        .HasColumnType("date")
                         .HasColumnName("дата обновления");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Inn")
-                        .IsUnique();
 
                     b.ToTable("клиенты");
                 });
@@ -78,23 +78,20 @@ namespace Teledock.Migrations
 
                     b.Property<string>("Inn")
                         .IsRequired()
-                        .HasColumnType("varchar(255)")
+                        .HasColumnType("longtext")
                         .HasColumnName("Инн");
 
-                    b.Property<DateTime>("dateAdd")
-                        .HasColumnType("datetime(6)")
+                    b.Property<DateOnly>("dateAdd")
+                        .HasColumnType("date")
                         .HasColumnName("дата добавления");
 
-                    b.Property<DateTime?>("dateUpdate")
-                        .HasColumnType("datetime(6)")
+                    b.Property<DateOnly?>("dateUpdate")
+                        .HasColumnType("date")
                         .HasColumnName("дата обновления");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ClientId");
-
-                    b.HasIndex("Inn")
-                        .IsUnique();
 
                     b.ToTable("учредители");
                 });
