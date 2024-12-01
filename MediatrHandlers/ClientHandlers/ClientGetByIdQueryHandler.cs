@@ -16,13 +16,9 @@ namespace Teledock.MediatrHandlers.ClientHandlers
         }
         public async Task<(string Error, ClientResponse ClientResponse)> Handle(ClientQuery request, CancellationToken cancellationToken)
         {
-            using(var mapper = new CustomMapper())
-            {
-                var result = await _clientService.getClientById(request.Id);
-                if(result.Error == String.Empty) return (result.Error, mapper.MapToClientResponse(result.client));
-                else return (result.Error,null);
-               
-            }
+            var result = await _clientService.getClientById(request.Id);
+            return result;
+
         }
     }
 }

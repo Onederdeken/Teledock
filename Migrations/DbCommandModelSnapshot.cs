@@ -10,8 +10,8 @@ using Teledock.dbContext;
 
 namespace Teledock.Migrations
 {
-    [DbContext(typeof(Db))]
-    partial class DbModelSnapshot : ModelSnapshot
+    [DbContext(typeof(DbCommand))]
+    partial class DbCommandModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {

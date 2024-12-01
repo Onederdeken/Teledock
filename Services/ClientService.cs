@@ -8,6 +8,7 @@ using Teledock.Mapper;
 using Teledock.Models;
 using Teledock.Queries.Clients;
 using Teledock.Queries.Founders;
+using Teledock.Responses;
 
 namespace Teledock.Services
 {
@@ -71,17 +72,18 @@ namespace Teledock.Services
 
         
 
-        public async Task<(string Error, List<ClientQuery> clients)> getAllClients()
+        public async Task<(string Error, List<ClientResponse> clients)> getAllClients()
         {
             String Error = String.Empty;
             List<ClientQuery> clientQueries = null;
-            List<FounderQuery> founderQueries = null;
+            List<ClientResponse> ClientResponse = new List<ClientResponse>();
             try
             {
                 var clients = await _ClientRep.getAllClients();
                 using(var mapper = new CustomMapper())
                 {
                     clientQueries = mapper.MapToListClientQuery(clients);
+                    ClientResponse = mapper.MapToListClientResponse(clientQueries);
                 }
                 
             }
@@ -89,13 +91,14 @@ namespace Teledock.Services
             {
                 Error = ex.Message;
             }
-            return (Error, clientQueries);
+            return (Error, ClientResponse);
         }
 
-        public async Task<(string Error, ClientQuery? client)> getClientById(int id)
+        public async Task<(string Error, ClientResponse? client)> getClientById(int id)
         {
             String Error = String.Empty;
             ClientQuery clientQuery = new ClientQuery();
+            ClientResponse clientResponse = null;
             try
             {
                 if(!await _ClientRep.ExistClient(id))return ("такого пользователя не существует",null);
@@ -103,25 +106,28 @@ namespace Teledock.Services
                 using(var mapper = new CustomMapper())
                 {
                     clientQuery = mapper.MapToClientQuery(client);
+                    clientResponse = mapper.MapToClientResponse(clientQuery);
                 }
             }
             catch(Exception ex)
             {
                 Error = ex.Message;
             }
-            return (Error, clientQuery);
+            return (Error, clientResponse);
         }
 
-        public async Task<(string Error, List<ClientQuery> clients)> getIPClients()
+        public async Task<(string Error, List<ClientResponse> clients)> getIPClients()
         {
             String Error = String.Empty;
             List<ClientQuery> clientQueries = new List<ClientQuery>();
+            List<ClientResponse> ClientResponse = new List<ClientResponse>();
             try
             {
                 var clients = await _ClientRep.getIPClient();
                 using (var mapper = new CustomMapper())
                 {
                     clientQueries = mapper.MapToListClientQuery(clients);
+                    ClientResponse = mapper.MapToListClientResponse(clientQueries);
                 }
                 
             }
@@ -129,26 +135,28 @@ namespace Teledock.Services
             {
                 Error = ex.Message;
             }
-            return (Error, clientQueries);
+            return (Error, ClientResponse);
         }
 
-        public async Task<(string Error, List<ClientQuery> clients)> getULClients()
+        public async Task<(string Error, List<ClientResponse> clients)> getULClients()
         {
             String Error = String.Empty;
             List<ClientQuery> clientQueries = new List<ClientQuery>();
+            List<ClientResponse> ClientResponse = new List<ClientResponse>();
             try
             {
                 var clients = await _ClientRep.getULClient();
                 using (var mapper = new CustomMapper())
                 {
                     clientQueries = mapper.MapToListClientQuery(clients);
+                    ClientResponse = mapper.MapToListClientResponse(clientQueries);
                 }
             }
             catch (Exception ex)
             {
                 Error = ex.Message;
             }
-            return (Error, clientQueries);
+            return (Error, ClientResponse);
         }
 
         public async Task<(string Message, int code)> UpdateClient(ClientCommand Client, int clientID)

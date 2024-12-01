@@ -7,11 +7,11 @@ using Teledock.Models;
 
 namespace Teledock.dbContext
 {
-    public class Db:DbContext
+    public class DbCommand:DbContext
     {
         public DbSet<Client> clients{get;set;}
         public DbSet<Founder> founders{get;set;}
-        public Db(DbContextOptions<Db> options):base(options){}
+        public DbCommand(DbContextOptions<DbCommand> options):base(options){}
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -23,6 +23,5 @@ namespace Teledock.dbContext
                 .HasIndex(e=>e.Inn)
                 .IsUnique();
         }
-
     }
 }

@@ -3,20 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Teledock.dbContext;
 
 #nullable disable
 
-namespace Teledock.Migrations
+namespace Teledock.Migrations.DbQueryMigrations
 {
-    [DbContext(typeof(Db))]
-    [Migration("20241129210753_init3")]
-    partial class init3
+    [DbContext(typeof(DbQuery))]
+    partial class DbQueryModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -35,7 +32,7 @@ namespace Teledock.Migrations
 
                     b.Property<string>("Inn")
                         .IsRequired()
-                        .HasColumnType("longtext")
+                        .HasColumnType("varchar(255)")
                         .HasColumnName("Инн");
 
                     b.Property<string>("Name")
@@ -47,15 +44,18 @@ namespace Teledock.Migrations
                         .HasColumnType("int")
                         .HasColumnName("тип");
 
-                    b.Property<DateOnly>("dateAdd")
-                        .HasColumnType("date")
+                    b.Property<DateTime>("dateAdd")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("дата добавления");
 
-                    b.Property<DateOnly?>("dateUpdate")
-                        .HasColumnType("date")
+                    b.Property<DateTime?>("dateUpdate")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("дата обновления");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Inn")
+                        .IsUnique();
 
                     b.ToTable("клиенты");
                 });
@@ -78,20 +78,23 @@ namespace Teledock.Migrations
 
                     b.Property<string>("Inn")
                         .IsRequired()
-                        .HasColumnType("longtext")
+                        .HasColumnType("varchar(255)")
                         .HasColumnName("Инн");
 
-                    b.Property<DateOnly>("dateAdd")
-                        .HasColumnType("date")
+                    b.Property<DateTime>("dateAdd")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("дата добавления");
 
-                    b.Property<DateOnly?>("dateUpdate")
-                        .HasColumnType("date")
+                    b.Property<DateTime?>("dateUpdate")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("дата обновления");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ClientId");
+
+                    b.HasIndex("Inn")
+                        .IsUnique();
 
                     b.ToTable("учредители");
                 });

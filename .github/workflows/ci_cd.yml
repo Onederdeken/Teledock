@@ -1,0 +1,65 @@
+﻿name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches: 
+      - main
+            
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Проверка исходного кода
+        uses: actions/checkout@v2
+
+      - name: Установка Docker
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker.io
+          sudo systemctl start docker
+          sudo systemctl enable docker
+
+      - name: Установка Docker Compose
+        run: |
+          sudo apt-get install -y curl
+          DOCKER_COMPOSE_VERSION=1.29.2
+          sudo curl -L "https://github.com/docker/compose/releases/download/$DOCKER_COMPOSE_VERSION/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
+
+      - name: Проверка установки
+        run: |
+          docker --version
+          docker-compose --version
+
+      - name: Checkout repository
+        uses: actions/checkout@v3  # Клонируем репозиторий
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '9.0.x'  # Указываем версию .NET, с которой будет собираться проект (возможно, тебе нужно будет изменить на 7.0 или другую версию, в зависимости от того, что используется в твоем проекте)
+
+      - name: Restore dependencies
+        run: dotnet restore  # Восстанавливаем зависимости проекта
+
+      - name: поднять докер
+        run: docker-compose up
+      - name: миграции для dbCommand
+        run: | 
+            dotnet ef migrations add initCommand --context dbCommand
+            dotnet ef database update --context dbCommand
+      - name: миграции для dbQuery
+        run: |
+            dotnet ef migrations add initQuery --context dbQuery
+            dotnet ef database update --context dbQuery
+      - name: Build project
+        run: dotnet build --configuration Release  # Сборка проекта в режиме Release
+
+      - name: Run tests (optional)
+        run: dotnet test  # Запуск тестов, если они есть в проекте
+      # Здесь добавьте шаги для сборки, тестирования и развертывания вашего приложения

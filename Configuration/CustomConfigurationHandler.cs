@@ -26,14 +26,19 @@ namespace Teledock.DI
 
             });
             //добавл€ю в DI dbcontext дл€ работы с бд
-            Services.AddDbContext<Db>(Options =>
+                //база данных дл€ записи
+            Services.AddDbContext<DbCommand>(Options =>
                 {
                     //настраиваю миграции и  подключение к бд через appseting.json 
-                    Options.UseMySql(Configuration.GetConnectionString("DbConnection"), ServerVersion.AutoDetect(Configuration.GetConnectionString("DbConnection")), m => m.MigrationsAssembly("Teledock"));
+                    Options.UseMySql(Configuration.GetConnectionString("DbConnectionCommand"), ServerVersion.AutoDetect(Configuration.GetConnectionString("DbConnectionCommand")), m => m.MigrationsAssembly("Teledock"));
                     //подключаю свой кастомный перехватчик событий бд
                     Options.AddInterceptors(new MyCustomInterceptorForDates());
                 }
             );
+            //база днных дл€ запросов
+            Services.AddDbContext<DbQuery>(Options => {
+                Options.UseMySql(Configuration.GetConnectionString("DbConnectionQuery"), ServerVersion.AutoDetect(Configuration.GetConnectionString("DbConnectionQuery")), m => m.MigrationsAssembly("Teledock"));
+            });
 
             Services.AddEndpointsApiExplorer();
             //подключаю и настраиваю swagger

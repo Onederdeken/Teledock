@@ -5,6 +5,7 @@ using Teledock.Mapper;
 using Teledock.Models;
 using Teledock.Queries.Founders;
 using Teledock.Repositories;
+using Teledock.Responses;
 namespace Teledock.Services
 {
     public class FounderService : IFounderService
@@ -96,16 +97,18 @@ namespace Teledock.Services
             return (Message, code);
         }
 
-        public async Task<(string Error, List<FounderQuery> Founders)> getAllFounders()
+        public async Task<(string Error, List<FounderResponse> Founders)> getAllFounders()
         {
             String Error = String.Empty;
             List<FounderQuery> founderQueries = null;
+            List<FounderResponse> founderResponses = new List<FounderResponse>(); 
             try
             {
                 var founders = await _FounderRep.getAllFounders();
                 using (var mapper = new CustomMapper())
                 {
                     founderQueries = mapper.MapToListFounderQuery(founders);
+                    founderResponses = mapper.MapToListFounderResponse(founderQueries);
                 }
 
             }
@@ -113,13 +116,14 @@ namespace Teledock.Services
             {
                 Error = ex.Message;
             }
-            return (Error, founderQueries);
+            return (Error, founderResponses);
         }
 
-        public async Task<(string Error, FounderQuery Founder)> getFounderById(int FounderId)
+        public async Task<(string Error, FounderResponse Founder)> getFounderById(int FounderId)
         {
             String Error = String.Empty;
             FounderQuery FounderQuery = new FounderQuery();
+            FounderResponse founderResponse = new FounderResponse();
             try
             {
                 if (!await _FounderRep.ExistFounder(FounderId)) return ("такого учредителя не существует", null);
@@ -127,13 +131,14 @@ namespace Teledock.Services
                 using (var mapper = new CustomMapper())
                 {
                     FounderQuery = mapper.MapToFounderQuery(founder);
+                    founderResponse = mapper.MapToFounderResponse(FounderQuery);
                 }
             }
             catch (Exception ex)
             {
                 Error = ex.Message;
             }
-            return (Error, FounderQuery);
+            return (Error, founderResponse);
         }
 
         public async Task<(string Message, int code)> UpdateFounder(FounderCommand founderCommand, int founderID)

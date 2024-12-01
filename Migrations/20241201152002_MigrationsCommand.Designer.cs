@@ -11,9 +11,9 @@ using Teledock.dbContext;
 
 namespace Teledock.Migrations
 {
-    [DbContext(typeof(Db))]
-    [Migration("20241123144234_Init1")]
-    partial class Init1
+    [DbContext(typeof(DbCommand))]
+    [Migration("20241201152002_MigrationsCommand")]
+    partial class MigrationsCommand
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -35,7 +35,7 @@ namespace Teledock.Migrations
 
                     b.Property<string>("Inn")
                         .IsRequired()
-                        .HasColumnType("longtext")
+                        .HasColumnType("varchar(255)")
                         .HasColumnName("Инн");
 
                     b.Property<string>("Name")
@@ -47,17 +47,20 @@ namespace Teledock.Migrations
                         .HasColumnType("int")
                         .HasColumnName("тип");
 
-                    b.Property<DateOnly>("dateAdd")
-                        .HasColumnType("date")
+                    b.Property<DateTime>("dateAdd")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("дата добавления");
 
-                    b.Property<DateOnly>("dateUpdate")
-                        .HasColumnType("date")
+                    b.Property<DateTime?>("dateUpdate")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("дата обновления");
 
                     b.HasKey("Id");
 
-                    b.ToTable("киенты");
+                    b.HasIndex("Inn")
+                        .IsUnique();
+
+                    b.ToTable("клиенты");
                 });
 
             modelBuilder.Entity("Teledock.Models.Founder", b =>
@@ -78,20 +81,23 @@ namespace Teledock.Migrations
 
                     b.Property<string>("Inn")
                         .IsRequired()
-                        .HasColumnType("longtext")
+                        .HasColumnType("varchar(255)")
                         .HasColumnName("Инн");
 
-                    b.Property<DateOnly>("dateAdd")
-                        .HasColumnType("date")
+                    b.Property<DateTime>("dateAdd")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("дата добавления");
 
-                    b.Property<DateOnly>("dateUpdate")
-                        .HasColumnType("date")
+                    b.Property<DateTime?>("dateUpdate")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("дата обновления");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ClientId");
+
+                    b.HasIndex("Inn")
+                        .IsUnique();
 
                     b.ToTable("учредители");
                 });

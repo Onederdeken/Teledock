@@ -18,18 +18,14 @@ namespace Teledock.MediatrHandlers.ClientHandlers
         }
         public async Task<(string Error, List<ClientResponse> ClientResponse)> Handle(ClientsQueries request, CancellationToken cancellationToken)
         {
-            using(var mapper = new CustomMapper())
+            
+            var result = request.Type switch
             {
-                var result = request.Type switch
-                {
-                    TypeClient.UL => await _clientService.getULClients(),
-                    TypeClient.IP => await _clientService.getIPClients(),
-                    _ => await _clientService.getAllClients(),
-                };
-                if(result.Error == String.Empty) return (result.Error, mapper.MapToListClientResponse(result.clients));
-                else return (result.Error, null);
-
-            }
+                TypeClient.UL => await _clientService.getULClients(),
+                TypeClient.IP => await _clientService.getIPClients(),
+                _ => await _clientService.getAllClients(),
+            };
+            return result;
         }
     }
 }

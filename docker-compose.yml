@@ -1,12 +1,23 @@
 services:
-  db:
-    container_name: "data_base"
+  dbCommand:
+    container_name: "data_base_Command"
     image: mariadb:latest
     restart: always
     environment:
       SERVER: localhost
       USER: root
       MARIADB_ROOT_PASSWORD: 12345
-      DATABASE: ClientAndFounder    
+      DATABASE: ClientAndFounderCommand    
     ports:
       - 3306:3306
+  dbQuery:
+    container_name: "data_base_Query"
+    image: mariadb:latest
+    restart: always
+    environment:
+      SERVER: localhost
+      USER: root
+      MARIADB_ROOT_PASSWORD: 12345
+      DATABASE: ClientAndFounderQuery    
+    ports:
+      - 3307:3307

@@ -16,14 +16,8 @@ namespace Teledock.MediatrHandlers.FounderHandlers
         }
         public async Task<(string Error, FounderResponse FounderResponse)> Handle(FounderQuery request, CancellationToken cancellationToken)
         {
-            using(var mapper = new CustomMapper())
-            {
-                var result = await _founderService.getFounderById(request.Id);
-                if(result.Error == String.Empty) return (result.Error, mapper.MapToFounderResponse(result.Founder));
-                else return (result.Error, null);
-
-            }
-            
+            var result = await _founderService.getFounderById(request.Id);
+            return result;
         }
     }
 }
