@@ -61,17 +61,18 @@ jobs:
 
       - name: Restore dependencies
         run: dotnet restore  # Восстанавливаем зависимости проекта
-
+      - name: скачиваем dotnet ef
+        run : dotnet tool install --global dotnet-ef # он нам нужен для миграций
       - name: поднять докер
-        run: docker-compose up -d
-      - name: миграции для dbCommand
+        run: docker-compose up -d #поднимаем контейнер с базами данных
+      - name: миграции для dbCommand 
         run: | 
             dotnet ef migrations add initCommand --context dbCommand
-            dotnet ef database update --context dbCommand
+            dotnet ef database update --context dbCommand # делаем миграции для базы данных dbCommand
       - name: миграции для dbQuery
         run: |
             dotnet ef migrations add initQuery --context dbQuery
-            dotnet ef database update --context dbQuery
+            dotnet ef database update --context dbQuery # делаем миграции для базы данных dbQuery
       - name: Build project
         run: dotnet build --configuration Release  # Сборка проекта в режиме Release
 
