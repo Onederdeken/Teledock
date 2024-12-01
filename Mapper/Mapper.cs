@@ -1,7 +1,9 @@
 ﻿using Teledock.Abstractions;
 using Teledock.Commands;
 using Teledock.Models;
-using Teledock.Queries;
+using Teledock.Queries.Clients;
+using Teledock.Queries.Founders;
+using Teledock.Responses;
 
 namespace Teledock.Mapper
 {
@@ -10,6 +12,48 @@ namespace Teledock.Mapper
         public void Dispose()
         {
 
+        }
+        public List<ClientResponse> MapToListClientResponse(List<ClientQuery> clientQueries)
+        {
+            List<ClientResponse> clientResponses = new List<ClientResponse>();
+            clientQueries.ForEach(client =>
+            {
+                clientResponses.Add(MapToClientResponse(client));
+            });
+            return clientResponses;
+        }
+        public ClientResponse MapToClientResponse(ClientQuery clientQuery)
+        {
+            return new ClientResponse
+            {
+                Id = clientQuery.Id,
+                Inn = clientQuery.Inn,
+                Name = clientQuery.Name,
+                Type = clientQuery.Type,
+                dateAdd = clientQuery.dateAdd,
+                dateUpdate = clientQuery.dateUpdate,
+                Founders = clientQuery.Type == TypeClient.IP ? null : clientQuery.Queryfounders == null ? new List<FounderResponse>() : MapToListFounderResponse(clientQuery.Queryfounders)
+            };
+        }
+        public List<FounderResponse> MapToListFounderResponse(List<FounderQuery> founderQueries)
+        {
+            List<FounderResponse> founderResponses = new List<FounderResponse>();
+            founderQueries.ForEach(query =>
+            {
+                founderResponses.Add(MapToFounderResponse(query));
+            });
+            return founderResponses;
+        }
+        public FounderResponse MapToFounderResponse(FounderQuery founderQuery)
+        {
+            return new FounderResponse()
+            {
+                Id = founderQuery.Id,
+                Inn = founderQuery.Inn,
+                FIO = founderQuery.FIO,
+                dateAdd = founderQuery.dateAdd,
+                dateUpdate = founderQuery.dateUpdate,
+            };
         }
 
         public Founder MapToFounder(FounderCommand founder)
@@ -37,7 +81,7 @@ namespace Teledock.Mapper
             {
                 Inn = client.Inn,
                 Name = client.Name,
-                _TypeClient = client.getTypeClient()
+                _TypeClient = client._TypeClient
 
             };
         }

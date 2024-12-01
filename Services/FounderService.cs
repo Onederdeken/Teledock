@@ -3,7 +3,7 @@ using Teledock.Abstractions;
 using Teledock.Commands;
 using Teledock.Mapper;
 using Teledock.Models;
-using Teledock.Queries;
+using Teledock.Queries.Founders;
 using Teledock.Repositories;
 namespace Teledock.Services
 {

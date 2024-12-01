@@ -4,10 +4,10 @@ using Teledock.Commands;
 
 namespace Teledock.MediatrHandlers.ClientHandlers
 {
-    public class ClientAddCommandHandler : IRequestHandler<ClientCommand, (string Message, int code)>
+    public class ClientCommandHandler : IRequestHandler<ClientCommand, (string Message, int code)>
     {
         private readonly IClientService _clientService;
-        public ClientAddCommandHandler(IClientService clientService)
+        public ClientCommandHandler(IClientService clientService)
         {
 
             _clientService = clientService;

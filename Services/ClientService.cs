@@ -6,7 +6,8 @@ using Teledock.Abstractions;
 using Teledock.Commands;
 using Teledock.Mapper;
 using Teledock.Models;
-using Teledock.Queries;
+using Teledock.Queries.Clients;
+using Teledock.Queries.Founders;
 
 namespace Teledock.Services
 {

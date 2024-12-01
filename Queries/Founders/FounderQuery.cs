@@ -3,19 +3,20 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Teledock.Responses;
 
-namespace Teledock.Queries
+namespace Teledock.Queries.Founders
 {
-    public class FounderQuery : IRequest<(String Error, FounderQuery FounderQuery)>
+    public class FounderQuery : IRequest<(string Error, FounderResponse FounderResponse)>
     {
-        public int Id{get;set;}
-        
-        public String Inn{get;set;}
-        
-        public String FIO{get;set;}
-        
-        public String dateAdd{get;set;}
-        
-        public String? dateUpdate{get;set;}
+        public int Id { get; set; }
+
+        public string Inn { get; set; }
+
+        public string FIO { get; set; }
+
+        public string dateAdd { get; set; }
+
+        public string? dateUpdate { get; set; }
     }
 }

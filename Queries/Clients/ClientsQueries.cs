@@ -1,16 +1,18 @@
 ﻿using MediatR;
 using Teledock.Models;
+using Teledock.Queries.Founders;
+using Teledock.Responses;
 
-namespace Teledock.Queries
+namespace Teledock.Queries.Clients
 {
-    public class ClientsQueries : IRequest<(String Error, List<ClientQuery> ClientQueries)>
+    public class ClientsQueries : IRequest<(string Error, List<ClientResponse> ClientQueries)>
     {
         public int Id { get; set; }
-        public String Inn { get; set; }
-        public String Name { get; set; }
+        public string Inn { get; set; }
+        public string Name { get; set; }
         public TypeClient Type { get; set; }
-        public String dateAdd { get; set; }
-        public String? dateUpdate { get; set; }
+        public string dateAdd { get; set; }
+        public string? dateUpdate { get; set; }
         public List<FounderQuery> Queryfounders { get; set; }
     }
 }

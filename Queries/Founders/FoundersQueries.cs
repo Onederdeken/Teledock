@@ -1,8 +1,9 @@
 ﻿using MediatR;
+using Teledock.Responses;
 
 namespace Teledock.Queries.Founders
 {
-    public class FoundersQueries : IRequest<(string Error, List<FounderQuery> FounderQuery)>
+    public class FoundersQueries : IRequest<(string Error, List<FounderResponse> FounderResponse)>
     {
         public int Id { get; set; }
 

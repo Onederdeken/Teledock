@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Teledock.Commands;
 using Teledock.Models;
-using Teledock.Queries;
+using Teledock.Queries.Clients;
 
 namespace Teledock.Abstractions
 {

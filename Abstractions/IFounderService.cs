@@ -1,6 +1,6 @@
 ﻿using Teledock.Commands;
 using Teledock.Models;
-using Teledock.Queries;
+using Teledock.Queries.Founders;
 
 namespace Teledock.Abstractions
 {

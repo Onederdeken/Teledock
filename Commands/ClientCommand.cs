@@ -16,13 +16,6 @@ namespace Teledock.Commands
         public string Name { get; set; }
         public Command comand { get; set; }
         public TypeClient _TypeClient { get; set; }
-
-        public void setTypeClient(TypeClient typeClient)
-        {
-
-            _TypeClient = typeClient;
-        }
-        public TypeClient getTypeClient() { return _TypeClient; }
     }
 
     public enum Command

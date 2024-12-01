@@ -5,10 +5,12 @@ using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Teledock.Models;
+using Teledock.Queries.Founders;
+using Teledock.Responses;
 
 namespace Teledock.Queries.Clients
 {
-    public class ClientQuery : IRequest<(string Error, ClientQuery ClientQuery)>
+    public class ClientQuery : IRequest<(string Error, ClientResponse ClientQuery)>
     {
         public int Id { get; set; }
         public string Inn { get; set; }

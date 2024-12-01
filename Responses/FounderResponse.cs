@@ -10,7 +10,6 @@ namespace Teledock.Responses
 
         public String FIO { get; set; }
         public String dateAdd { get; set; }
-
         public String? dateUpdate { get; set; }
     }
 }

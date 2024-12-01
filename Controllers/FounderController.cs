@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using System.ComponentModel.DataAnnotations;
@@ -15,13 +16,16 @@ namespace Teledock.Controllers
     public class FounderController : ControllerBase
     {
         private readonly IFounderService _FounderService;
-        public FounderController(IFounderService founderService)
+        private readonly IMediator _mediator;
+        public FounderController(IMediator mediator,IFounderService founderService)
         {
             this._FounderService = founderService;
+            this._mediator = mediator;
         }
         [HttpGet("GetAllFounders")]
         public async Task<IActionResult> GetAllFounders()
         {
+            
             var result = await _FounderService.getAllFounders();
             if (result.Error == String.Empty)
             {

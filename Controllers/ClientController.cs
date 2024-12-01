@@ -11,6 +11,7 @@ using Teledock.Commands;
 using Teledock.dbContext;
 using Teledock.Models;
 using Teledock.Queries.Clients;
+using Teledock.Requests;
 
 namespace Teledock.Controllers
 {
@@ -19,9 +20,8 @@ namespace Teledock.Controllers
     public class ClientController : ControllerBase
     {
         private readonly IMediator _mediator;
-        private readonly IClientService _clientService;
-        public ClientController(IClientService clientService, IMediator mediator) {
-            this._clientService = clientService;
+        public ClientController(IMediator mediator) {
+            
             this._mediator = mediator;
         }
         [HttpGet("GetAllClients")]
@@ -49,23 +49,38 @@ namespace Teledock.Controllers
         [HttpGet("GetClientsIP")]
         public async Task<IActionResult> GetClientsIP()
         {
-            var result = await _clientService.getIPClients();
-            if (result.Error == String.Empty) return Ok(result.clients);
-            else return BadRequest(result.clients);
+            ClientsQueries clientQueries = new ClientsQueries()
+            {
+                Type = TypeClient.IP
+            };
+            var result = await _mediator.Send(clientQueries);
+            if (result.Error == String.Empty) return Ok(result.ClientQueries);
+            else return BadRequest(result.ClientQueries);
         }
         [HttpGet("GetClientsUL")]
         public async Task<IActionResult> GetClientsUL()
         {
-            var result = await _clientService.getULClients();
-            if (result.Error == String.Empty) return Ok(result.clients);
-            else return BadRequest(result.clients);
+            ClientsQueries clientQueries = new ClientsQueries()
+            {
+                Type = TypeClient.UL
+            };
+            var result = await _mediator.Send(clientQueries);
+            if (result.Error == String.Empty) return Ok(result.ClientQueries);
+            else return BadRequest(result.ClientQueries);
         }
 
         [HttpPost("AddClient")]
-        public async Task<IActionResult> AddClient( [Required]ClientCommand client, [Required]TypeClient type)
+        public async Task<IActionResult> AddClient( [Required]ClientRequest client, [Required]TypeClient type)
         {
             client.setTypeClient(type);
-            var result = await _clientService.addClient(client);
+            ClientCommand command = new ClientCommand()
+            {
+                Inn = client.Inn,
+                Name = client.Name,
+                comand = Command.Add,
+                _TypeClient = type
+            };
+            var result = await _mediator.Send(command);
             if(result.code == 400)
             {
                 return BadRequest(result.Message);
@@ -75,15 +90,28 @@ namespace Teledock.Controllers
         [HttpDelete("DeleteClient")]
         public async Task<IActionResult> DeleteClient([Required]int IdClient)
         {
-            var result = await _clientService.DeleteClient(IdClient);
+            ClientCommand command = new ClientCommand()
+            {
+                Id = IdClient,
+                comand = Command.Delete
+            };
+            var result = await _mediator.Send(command);
             if (result.code == 200) return Ok(result.Message);
             else return BadRequest(result.Message);
         }
         [HttpPut("ClientUpdate")]
-        public async Task<IActionResult> UpdateClient([Required]ClientCommand clientCommand, [Required]int clientID, TypeClient type)
+        public async Task<IActionResult> UpdateClient([Required]ClientRequest client, [Required]int clientID, TypeClient type)
         {
-            clientCommand.setTypeClient(type);
-            var result = await _clientService.UpdateClient(clientCommand, clientID);
+            client.setTypeClient(type);
+            ClientCommand command = new ClientCommand()
+            {
+                Id = clientID,
+                Inn = client.Inn,
+                Name = client.Name,
+                comand = Command.Update,
+                _TypeClient = type
+            };
+            var result = await _mediator.Send(command);
             if (result.code == 200) return Ok(result.Message);
             else return BadRequest(result.Message);
         }
