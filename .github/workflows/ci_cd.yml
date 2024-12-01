@@ -63,7 +63,7 @@ jobs:
         run: dotnet restore  # Восстанавливаем зависимости проекта
 
       - name: поднять докер
-        run: docker-compose up
+        run: docker-compose up -d
       - name: миграции для dbCommand
         run: | 
             dotnet ef migrations add initCommand --context dbCommand
