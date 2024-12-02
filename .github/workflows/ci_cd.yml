@@ -67,12 +67,12 @@ jobs:
         run: docker-compose up -d #поднимаем контейнер с базами данных
       - name: миграции для dbCommand 
         run: | 
-            dotnet ef migrations add initCommand --context dbCommand
-            dotnet ef database update --context dbCommand # делаем миграции для базы данных dbCommand
+            dotnet ef migrations add initCommand --context DbCommand
+            dotnet ef database update --context DbCommand # делаем миграции для базы данных dbCommand
       - name: миграции для dbQuery
         run: |
-            dotnet ef migrations add initQuery --context dbQuery
-            dotnet ef database update --context dbQuery # делаем миграции для базы данных dbQuery
+            dotnet ef migrations add initQuery --context DbQuery
+            dotnet ef database update --context DbQuery # делаем миграции для базы данных dbQuery
       - name: Build project
         run: dotnet build --configuration Release  # Сборка проекта в режиме Release
 
