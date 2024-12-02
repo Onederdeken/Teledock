@@ -12,8 +12,8 @@ using Teledock.dbContext;
 namespace Teledock.Migrations.DbQueryMigrations
 {
     [DbContext(typeof(DbQuery))]
-    [Migration("20241201152241_MigrationsQuery")]
-    partial class MigrationsQuery
+    [Migration("20241202140746_InitQuery")]
+    partial class InitQuery
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

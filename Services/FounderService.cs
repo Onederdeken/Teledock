@@ -22,7 +22,9 @@ namespace Teledock.Services
             int code = 0;
             try
             {
-                if (await _FounderRep.ExistClient(ClientID) == false) return ("такого клиента не существует", 400);
+                var client = await _FounderRep.ExistClient(ClientID);
+                if (client == null) return ("такого клиента не существует", 400);
+                else if (client._TypeClient == TypeClient.IP) return ("Вы пытаетесь добавить учредителя к ИП", 400);
                 using (var mapper = new CustomMapper())
                 {
                     await _FounderRep.AddFounder(ClientID, mapper.MapToFounder(founder));
@@ -45,7 +47,7 @@ namespace Teledock.Services
             int code = 0;
             try
             {
-                if (await _FounderRep.ExistClient(ClientId) && await _FounderRep.ExistFounder(FounderId))
+                if (await _FounderRep.ExistClient(ClientId) != null && await _FounderRep.ExistFounder(FounderId))
                 {
                     await _FounderRep.ChangeClient(FounderId, ClientId);
                     Message = "смена клиента прошла успешно";

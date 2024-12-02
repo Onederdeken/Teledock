@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Teledock.Migrations
 {
     /// <inheritdoc />
-    public partial class MigrationsCommand : Migration
+    public partial class InitCommand : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

@@ -30,14 +30,14 @@ namespace Teledock.DI
             Services.AddDbContext<DbCommand>(Options =>
                 {
                     //настраиваю миграции и  подключение к бд через appseting.json 
-                    Options.UseMySql(Configuration.GetConnectionString("DbConnectionCommand"), ServerVersion.AutoDetect(Configuration.GetConnectionString("DbConnectionCommand")), m => m.MigrationsAssembly("Teledock"));
+                    Options.UseMySql(Configuration.GetConnectionString("DbCommand"), ServerVersion.AutoDetect(Configuration.GetConnectionString("DbCommand")), m => m.MigrationsAssembly("Teledock"));
                     //подключаю свой кастомный перехватчик событий бд
                     Options.AddInterceptors(new MyCustomInterceptorForDates());
                 }
             );
             //база днных для запросов
             Services.AddDbContext<DbQuery>(Options => {
-                Options.UseMySql(Configuration.GetConnectionString("DbConnectionQuery"), ServerVersion.AutoDetect(Configuration.GetConnectionString("DbConnectionQuery")), m => m.MigrationsAssembly("Teledock"));
+                Options.UseMySql(Configuration.GetConnectionString("DbQuery"), ServerVersion.AutoDetect(Configuration.GetConnectionString("DbQuery")), m => m.MigrationsAssembly("Teledock"));
             });
 
             Services.AddEndpointsApiExplorer();

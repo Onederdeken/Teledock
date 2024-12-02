@@ -12,8 +12,8 @@ using Teledock.dbContext;
 namespace Teledock.Migrations
 {
     [DbContext(typeof(DbCommand))]
-    [Migration("20241201152002_MigrationsCommand")]
-    partial class MigrationsCommand
+    [Migration("20241202140725_InitCommand")]
+    partial class InitCommand
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

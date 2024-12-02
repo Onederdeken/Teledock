@@ -63,12 +63,20 @@ namespace Teledock.Repositories
             {
                 try
                 {
+                    //добавляем в базу даннхы dbCommand
                     await _dbCommand.AddAsync(client);
                     await _dbCommand.SaveChangesAsync();
+
+                    //вносим изменения в базу данных dbQuery дабы сохранить целостность
+                    await _dbQuery.AddAsync(client);
+                    await _dbQuery.SaveChangesAsync();
+
+                    //если все прошло хорошо комитим изменения
                     transaction.Complete();
                 }
                 catch (System.Exception ex)
                 {
+                    //если нет отменяем все изменения и выбрасываем исключение
                     throw new Exception("ошибка добавления клиента" + "\nОшибка: " + ex.Message + "\n" + "внутреняя ошибка:" + ex.InnerException.Message);
                 }
             }
@@ -79,17 +87,24 @@ namespace Teledock.Repositories
             {
                 try
                 {
+                    //меняем поля одной записи
                     var Client = await _dbCommand.clients.FindAsync(client.Id);
                     Client.Name = client.Name;
                     Client.Inn = client.Inn;
-                    if (client._TypeClient != 0) Client._TypeClient = client._TypeClient;
+                    if (client._TypeClient != 0) Client._TypeClient = client._TypeClient; // если с контроллера прилетел _TypeClient == 0, то
+                    //сохраняем изменения в бд dbCommand                                     тип не меняется иначе мы его меняем
                     await _dbCommand.SaveChangesAsync();
+
+                    //вносим изменения в базу данных dbQuery дабы сохранить целостность
+                    _dbQuery.Entry(Client).State = EntityState.Modified;
+                    await _dbQuery.SaveChangesAsync();
+                    // комитим изменения
                     transaction.Complete();
                 }
                 catch (System.Exception ex)
                 {
-
-                    throw new Exception("ошибка обновления клиента" + "\nОшибка: " + ex.Message + "\n" + "внутреняя ошибка:" + ex.InnerException.Message);
+                    //отменяем изменения и выбрасываем исключение
+                    throw new Exception("ошибка обновления клиента" + "\nОшибка: " + ex.Message + "\n" + "внутреняя ошибка:" + ex.InnerException == null? " ": ex.InnerException.Message);
                 }
             }
         }
@@ -98,14 +113,27 @@ namespace Teledock.Repositories
             {
                 try
                 {
+                    //находим запись клиента по Id
                     var client = await _dbCommand.clients.Include(c=>c.founders).FirstOrDefaultAsync(c=>c.Id == Id);
+                    //удаляем все зависимые сущности
                     _dbCommand.founders.RemoveRange(client.founders);
+                    //удалаяем саму запись
                     _dbCommand.clients.Remove(client);
+                    //сохраняем изменения
                     await _dbCommand.SaveChangesAsync();
+
+                    //вносим изменения в базу данных dbQuery дабы сохранить целостность
+                    _dbQuery.Attach(client);
+                    _dbQuery.founders.RemoveRange(client.founders);
+                    _dbQuery.clients.Remove(client);
+                    await _dbQuery.SaveChangesAsync();
+
+                    //коммитим изменения в случае удачи
                     transaction.Complete();
                 }
                 catch (System.Exception ex)
                 {
+                    //отменяем изменения и выбрасываем исключение
                     throw new Exception("ошибка удаления клиента" + "\nОшибка: " + ex.Message + "\n" + "внутреняя ошибка:" + ex.InnerException.Message);
                 }
             }

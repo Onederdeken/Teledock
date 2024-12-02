@@ -101,7 +101,7 @@ namespace Teledock.Services
             ClientResponse clientResponse = null;
             try
             {
-                if(!await _ClientRep.ExistClient(id))return ("такого пользователя не существует",null);
+                if(!await _ClientRep.ExistClient(id))return ("такого клиента не существует",null);
                 var client = await _ClientRep.getClientById(id);
                 using(var mapper = new CustomMapper())
                 {

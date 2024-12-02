@@ -11,7 +11,7 @@ namespace Teledock.Abstractions
         public Task AddFounder(int ClientId, Founder founder);
         public Task<bool> ExistFounder(int FounderId);
         public Task ChangeClient(int FounderId, int ClientId);
-        public Task<bool> ExistClient(int Id);
+        public Task<Client?> ExistClient(int Id);
 
     }
 }

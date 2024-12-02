@@ -8,11 +8,11 @@ namespace Teledock.Repositories
 {
     public class FounderRepositories : IFounderRepository
     {
-        private readonly DbCommand _db;
+        private readonly DbCommand _dbCommand;
         private readonly DbQuery _dbQuery;
         public FounderRepositories(DbCommand db, DbQuery dbQuery)
         {
-            this._db = db;
+            this._dbCommand = db;
             this._dbQuery = dbQuery;
         }
         public async Task AddFounder(int ClientId, Founder founder)
@@ -20,19 +20,22 @@ namespace Teledock.Repositories
             using(var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
                 try
-                {
-                    var client = await _db.clients.FindAsync(ClientId);
-                    if (client._TypeClient == TypeClient.UL)
-                    {
-                        founder.ClientId = ClientId;
-                        _db.Add(founder);
-                        await _db.SaveChangesAsync();
-                        transaction.Complete();
-                    }
-                    else  throw new Exception("Вы пытаетесь добавить учредителя к ИП");
+                {   //указываем к которому клиенту принадлежит этот учредитель
+                    founder.ClientId = ClientId;
+                    //добавляем запись
+                    _dbCommand.Add(founder);
+                    //сохраняем
+                    await _dbCommand.SaveChangesAsync();
+                    //вносим изменения в базу данных dbQuery дабы сохранить целостность
+                    _dbQuery.Add(founder);
+                    await _dbQuery.SaveChangesAsync();
+
+                    //комминитм изменения
+                    transaction.Complete();
                 }
                 catch (System.Exception ex)
                 {
+                    //отменяем изменения и выбрасываем исключение
                     throw new Exception("ошибка добавления учредителя для клиента" + "\n" + ex.Message);
                 }
             }
@@ -44,13 +47,25 @@ namespace Teledock.Repositories
             {
                 try
                 {
-                    var Founder = _db.founders.Find(FounderId);
+                    //находим запись про нужного учредителя
+                    var Founder = _dbCommand.founders.Find(FounderId);
+                    //меням поле ClientId
                     Founder.ClientId = ClientId;
-                    await _db.SaveChangesAsync();
+                    //сохраняем изменения
+                    await _dbCommand.SaveChangesAsync();
+
+                    //добавляем Founder к контексту dbQuery
+                    
+                    _dbQuery.Entry(Founder).State = EntityState.Modified;
+                    //сохраняем изменения
+                    await _dbQuery.SaveChangesAsync();
+
+                    //комитим все изменения
                     transaction.Complete();
                 }
                 catch (System.Exception ex)
                 {
+                    //отменяем все изменения и выбрасываем исключение
                     throw new Exception("ошибка смены клиента" + "\n" + ex.Message);
                 }
             }
@@ -62,20 +77,32 @@ namespace Teledock.Repositories
             {
                 try
                 {
-                    var founder = await _db.founders.FindAsync(FounderId);
-                    _db.founders.Remove(founder);
-                    await _db.SaveChangesAsync();
+                    // находим нужную запись
+                    var founder = await _dbCommand.founders.FindAsync(FounderId);
+                    //удаляем ее
+                    _dbCommand.founders.Remove(founder);
+                    //сохраняем изменения
+                    await _dbCommand.SaveChangesAsync();
+
+                    //добавляем нужную запись к контексту dbQuery
+                    _dbQuery.Attach(founder);
+                    //указываем что она удалена
+                    _dbQuery.Entry(founder).State = EntityState.Deleted;
+                    //сохранаяем изменения
+                    await _dbQuery.SaveChangesAsync();
+                    //комитим изменения
                     transaction.Complete();
                 }
                 catch (System.Exception ex)
                 {
+                    //отменяем все изменения и выбрасываем исключение
                     throw new Exception("ошибка удаления учредителя" + "\n" + ex.Message);
                 }
             }
         }
         public async Task<bool> ExistFounder(int FounderId)
         {
-            var founder = await _db.founders.AsNoTracking().FirstOrDefaultAsync(c=>c.Id == FounderId);
+            var founder = await _dbCommand.founders.AsNoTracking().FirstOrDefaultAsync(c=>c.Id == FounderId);
             return founder == null ? false : true;
         }
 
@@ -83,7 +110,7 @@ namespace Teledock.Repositories
         {
             try
             {
-                return await _db.founders.ToListAsync();
+                return await _dbCommand.founders.ToListAsync();
             }
             catch (System.Exception ex)
             {
@@ -95,7 +122,7 @@ namespace Teledock.Repositories
         {
             try
             {
-                return await _db.founders.FirstOrDefaultAsync(c => c.Id == FounderId);
+                return await _dbCommand.founders.FirstOrDefaultAsync(c => c.Id == FounderId);
             }
             catch (System.Exception ex)
             {
@@ -109,23 +136,34 @@ namespace Teledock.Repositories
             {
                 try
                 {
-                    var Founder = _db.founders.Find(founder.Id);
+                    //находим нужного учредителя
+                    var Founder = _dbCommand.founders.Find(founder.Id);
+                    //меняем его поля
                     Founder.FIO = founder.FIO;
                     Founder.Inn = founder.Inn;
-                    await _db.SaveChangesAsync();
+                    //сохраняем изменения
+                    await _dbCommand.SaveChangesAsync();
+
+                    //добавляем нужного учредителя в контекст dbQuery и указываем что он был изменен
+                    
+                    _dbQuery.Entry(Founder).State=EntityState.Modified;
+                    await _dbQuery.SaveChangesAsync();
+
+                    //комитим все изменения
                     transaction.Complete();
                 }
                 catch (System.Exception ex)
                 {
+                    //отменяем все изменения и выбрасываем исключение
                     throw new Exception("ошибка обновления учредителя" + "\n" + ex.Message);
                 }
             }
         }
-        public async Task<bool> ExistClient(int Id)
+        public async Task<Client?> ExistClient(int Id)
         {
-            bool result;
-            var client = await _db.clients.AsNoTracking().FirstOrDefaultAsync(c => c.Id == Id);
-            return client == null ? false : true;
+            
+            var client = await _dbCommand.clients.AsNoTracking().FirstOrDefaultAsync(c => c.Id == Id);
+            return client;
         }
     }
 }
