@@ -63,11 +63,21 @@ jobs:
         run: dotnet restore  # Восстанавливаем зависимости проекта
       - name: скачиваем dotnet ef
         run : dotnet tool install --global dotnet-ef # он нам нужен для миграций
+      - name: сбилдить библиотки классов
+        run: |
+            cd Teledock.Domain
+            dotnet build
+            cd ../Teledock.Infrastructure
+            dotnet build
+            cd ../Teledock.Application
+            dotnet build
+            cd ..
+            
       - name: поднять докер
         run: docker-compose up -d #поднимаем контейнер с базами данных
       - name: миграции для dbCommand 
         run: |
-            cd /WebApi
+            cd WebApi
             dotnet ef migrations add InitCommandLast --context DbCommand --project ..\Teledock.Infrastructure\Teledock.Infrastructure.csproj
             dotnet ef database update --context DbCommand --project ..\Teledock.Infrastructure\Teledock.Infrastructure.csproj # делаем миграции для базы данных dbCommand
       - name: миграции для dbQuery
