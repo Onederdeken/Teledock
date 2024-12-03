@@ -82,7 +82,7 @@ jobs:
             dotnet ef database update --context DbCommand --project ../Teledock.Infrastructure/Teledock.Infrastructure.csproj # делаем миграции для базы данных dbCommand
       - name: миграции для dbQuery
         run: |
-            dotnet ef migrations add initQuery1 --context DbQuery --project ../Teledock.Infrastructure/Teledock.Infrastructure.csproj
+            dotnet ef migrations add initQueryLast --context DbQuery --project ../Teledock.Infrastructure/Teledock.Infrastructure.csproj
             dotnet ef database update --context DbQuery --project ../Teledock.Infrastructure/Teledock.Infrastructure.csproj # делаем миграции для базы данных dbQuery
             cd ..
       - name: Build project
