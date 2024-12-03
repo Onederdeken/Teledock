@@ -3,7 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.002.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Teledock", "Teledock.csproj", "{BEBB390C-751F-44E3-A66E-67A30978B18A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Teledock", "WebApi\Teledock.csproj", "{BEBB390C-751F-44E3-A66E-67A30978B18A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{689A2D5C-3388-4405-9EC5-93AA40CB9B71}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Teledock.Domain", "Teledock.Domain\Teledock.Domain.csproj", "{D35200F9-96CE-41B7-93E5-FAFDD1097FE3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Teledock.Application", "Teledock.Application\Teledock.Application.csproj", "{1FE2EE82-832C-4B25-8436-DF223A54A564}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{4A37B5B3-8006-4D68-ACF5-5CB2272D73B7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Teledock.Infrastructure", "Teledock.Infrastructure\Teledock.Infrastructure.csproj", "{360ABA39-15D9-4742-A79C-4E9A2DABAF14}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,9 +25,26 @@ Global
 		{BEBB390C-751F-44E3-A66E-67A30978B18A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BEBB390C-751F-44E3-A66E-67A30978B18A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BEBB390C-751F-44E3-A66E-67A30978B18A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D35200F9-96CE-41B7-93E5-FAFDD1097FE3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D35200F9-96CE-41B7-93E5-FAFDD1097FE3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D35200F9-96CE-41B7-93E5-FAFDD1097FE3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D35200F9-96CE-41B7-93E5-FAFDD1097FE3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1FE2EE82-832C-4B25-8436-DF223A54A564}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1FE2EE82-832C-4B25-8436-DF223A54A564}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1FE2EE82-832C-4B25-8436-DF223A54A564}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1FE2EE82-832C-4B25-8436-DF223A54A564}.Release|Any CPU.Build.0 = Release|Any CPU
+		{360ABA39-15D9-4742-A79C-4E9A2DABAF14}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{360ABA39-15D9-4742-A79C-4E9A2DABAF14}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{360ABA39-15D9-4742-A79C-4E9A2DABAF14}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{360ABA39-15D9-4742-A79C-4E9A2DABAF14}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{D35200F9-96CE-41B7-93E5-FAFDD1097FE3} = {689A2D5C-3388-4405-9EC5-93AA40CB9B71}
+		{1FE2EE82-832C-4B25-8436-DF223A54A564} = {689A2D5C-3388-4405-9EC5-93AA40CB9B71}
+		{360ABA39-15D9-4742-A79C-4E9A2DABAF14} = {4A37B5B3-8006-4D68-ACF5-5CB2272D73B7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {96F4BDF4-91C8-4014-9BF8-10A1E3E61DB6}
