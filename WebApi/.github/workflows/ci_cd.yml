@@ -75,6 +75,16 @@ jobs:
             
       - name: поднять докер
         run: docker-compose up -d #поднимаем контейнер с базами данных
+      - name: миграции для dbCommand 
+        run: |
+            cd WebApi
+            dotnet ef migrations add InitCommandLast --context DbCommand  --project ../Teledock.Infrastructure/Teledock.Infrastructure.csproj --startup-project Teledock.csproj
+            dotnet ef database update --context DbCommand --project ../Teledock.Infrastructure/Teledock.Infrastructure.csproj --startup-project Teledock.csproj # делаем миграции для базы данных dbCommand
+      - name: миграции для dbQuery
+        run: |
+            dotnet ef migrations add initQuery1 --context DbQuery --project ../Teledock.Infrastructure/Teledock.Infrastructure.csproj --startup-project Teledock.csproj
+            dotnet ef database update --context DbQuery --project ../Teledock.Infrastructure/Teledock.Infrastructure.csproj --startup-project Teledock.csproj # делаем миграции для базы данных dbQuery
+            cd ..
       - name: Build project
         run: dotnet build --configuration Release  # Сборка проекта в режиме Release
 
