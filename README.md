@@ -6,6 +6,7 @@
                 dotnet ef database update --context DbQuery --project ../Teledock.Infrastructure/Teledock.Infrastructure.csproj --startup-project Teledock.csproj
 Теперь можно запускать.
 
+
 навсякий случай 
 из директории Teledock/WebApi
 
